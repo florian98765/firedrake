@@ -44,10 +44,8 @@ class ASMPatchPC(PCBase):
         # Set default solver parameters
         asmpc.setASMType(PETSc.PC.ASMType.BASIC)
         opts = PETSc.Options(asmpc.getOptionsPrefix())
-        if "sub_pc_type" not in opts:
-            opts["sub_pc_type"] = "lu"
-        if "sub_pc_factor_shift_type" not in opts:
-            opts["sub_pc_factor_shift_type"] = "NONE"
+        opts.setdefault("sub_pc_type", "lu")
+        opts.setdefault("sub_pc_factor_shift_type", "NONE")
 
         # Try to do this programatically
         # ksp = asmpc.getASMSubKSP()

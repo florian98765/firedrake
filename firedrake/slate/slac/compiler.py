@@ -151,11 +151,7 @@ def generate_loopy_kernel(slate_expr, tsfc_parameters=None):
     loopy_merged = loopy.register_function_id_to_in_knl_callable_mapper(loopy_merged, inv_fn_lookup)
     loopy_merged = loopy.register_function_id_to_in_knl_callable_mapper(loopy_merged, solve_fn_lookup)
 
-    # WORKAROUND: Generate code directly from the loopy kernel here,
-    # then attach code as a c-string to the op2kernel
-    code = loopy.generate_code_v2(loopy_merged).device_code()
-    code.replace('void slate_kernel', 'static void slate_kernel')
-    loopykernel = op2.Kernel(code, loopy_merged.name, ldargs=["-llapack"])
+    loopykernel = op2.Kernel(loopy_merged, loopy_merged.name, ldargs=["-llapack"])
 
     kinfo = KernelInfo(kernel=loopykernel,
                        integral_type="cell",  # slate can only do things as contributions to the cell integrals
